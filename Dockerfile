@@ -1,5 +1,5 @@
 # FROM --platform=linux/arm64 python:3.9
-FROM --platform=linux/amd64 python:3.9
+FROM --platform=linux/amd64 alibaba-cloud-linux-3-registry.cn-hangzhou.cr.aliyuncs.com/alinux3/python:3.11.1
 ENV TZ=Asia/Shanghai
 ARG DEBIAN_FRONTEND=noninteractive
 
