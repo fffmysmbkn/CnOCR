@@ -66,6 +66,34 @@ def ocr() -> Dict[str, Any]:
 
     return jsonify(OcrResponse(results=res).dict())
 
+@app.route('/ocrStream', methods=['POST'])
+def ocrStream()-> Dict[str, Any]:
+    # 检查请求中是否有文件数据
+    if 'file' not in request.files:
+        return jsonify({"error": "No file part"}), 400
+
+    file = request.files['file']
+
+    # 如果用户没有选择文件，浏览器也可能发送一个空的文件名
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
+
+    if file:
+        # 这里你可以处理文件，例如保存到磁盘或数据库
+        # file.save(os.path.join(UPLOAD_FOLDER, filename))
+        
+        # 读取文件流
+        file_stream = file.read()
+        
+        image = Image.open(io.BytesIO(img_bytes)).convert('RGB')
+        res = OCR_MODEL.ocr(image)
+        for _one in res:
+            _one['position'] = _one['position'].tolist()
+            if 'cropped_img' in _one:
+                _one.pop('cropped_img')
+
+        return jsonify(OcrResponse(results=res).dict())
+
 
 if __name__ == "__main__":
     app.run()
